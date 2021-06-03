@@ -1,0 +1,20 @@
+{
+	"twitch": {
+		"clientID": "",
+		"token": ""
+	},
+	"channel": "00000000",
+	"episodesFolder": "./episodes/",
+	"rssLocation": "./rss.xml",
+	"episodesUrl": "https://example.com/episodes/",
+	"podcast":{
+		"title": "A Twitch Podcast",
+		"description": "An audio version of a twitch channel's VODs",
+		"feedUrl": "https://example.com/rss.xml",
+		"siteUrl": "https://example.com/",
+		"imageUrl": "https://example.com/logo.jpg",
+		"language": "en",
+		"author": "Example Author",
+		"categories": ["fun","chatting"]
+	}
+}
