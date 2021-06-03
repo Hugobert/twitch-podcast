@@ -1,5 +1,6 @@
 # twitch-podcast
-Generates an audio podcast from Twitch VODs
+A tool that generates an audio podcast from Twitch VODs.
+This helps make chat streams accessible to anyone who does not have permanent access to unlimited internet.
 
 # Prerequesites
 - [youtube-dl](https://github.com/ytdl-org/youtube-dl)
@@ -20,7 +21,7 @@ To start, simply do `npm start`.
 
 If youtube-dl and ffmpeg are installed correctly and are added to your path it should work on any platform.
 
-If a channel has lots of existing VODs, it will go through all of them, but won't generate a feed until it has processed every single VOD which in some cases can take a long time - to generate a feed file everytime a new episode has been processed, open `index.js`, scroll down towards the end where the comment block is, and uncomment the line that says `//saveXml();`. Once the initial processing phase is over, it will only download VODs that are missing (files that got deleted, or new VODs that have been added).
+If a channel has lots of existing VODs, it will go through all of them, but won't generate a feed until it has processed every single VOD which in some cases can take a long time - to generate a feed file everytime a new episode has been processed, open `index.js`, scroll down towards the end where the comment block is, and uncomment the line that says `//saveXml();`. Once the initial processing phase is over, it will only download VODs that are missing (files that got deleted, or new VODs that have been added) and update the feed accordingly.
 
 # Contribution
 I'm currently not actively using or developing this anymore and have no incentive to do so right now. However, if you find issues with this or want to add features, feel free to write an issue or send a pull request and I'll take a look at it.
