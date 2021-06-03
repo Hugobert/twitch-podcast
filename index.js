@@ -28,7 +28,6 @@ function durationParse(hms) {
 	}
 	let s = parseInt(hms.match(/\d*(?=s)/)[0]);
 	let final = (h*60*60)+(m*60)+s;
-	//console.log(h,m,s,hms,final);
 	return final;
 }
 
@@ -42,11 +41,11 @@ function addToFeed(vod){
 	feed.addItem({
 		title:  vod.title,
 		description: vod.description+" - - - <a href='"+vod.url+"' target='_blank'>Watch on Twitch</a>",
-		url: vod.url, // link to the item
-		categories: config.podcast.categories, // optional - array of item categories
-		date: vod.published_at, // any format that js Date can parse.
+		url: vod.url,
+		categories: config.podcast.categories,
+		date: vod.published_at,
 		itunesDuration: durationParse(vod.duration),
-		enclosure : {url:config.episodesUrl+vod.id+'.mp3'}, // optional enclosure
+		enclosure : {url:config.episodesUrl+vod.id+'.mp3'},
 		customElements: [{itemid:vod.id}], // this is an optional element, but is super useful if you want to interconnect your podcast with services like zapier.
 	});
 	console.log(vod.id+" added to feed");
@@ -78,6 +77,8 @@ const feed = new Podcast({
 
 
 // ===== PROGRAM START ===== //
+
+// TODO: get channel id by providing username. 
 
 console.log("Getting VODs...");
 var endOfList = false;
@@ -113,15 +114,12 @@ do {
 	}
 } while (!endOfList);
 
-
-// loop over data
 var i=0;
 addItem(i);
 function addItem(i){
 	if(i<vods.length){
 		console.log("Progress: "+i+"/"+vods.length);
 		let vod = vods[i];
-		// check if file already exists
 		if(!fs.existsSync(config.episodesFolder+vod.id+".mp3")){
 			console.log("Downloading "+vod.id+" - "+vod.title);
 			var download = spawn('youtube-dl', ["https://www.twitch.tv/videos/"+vod.id, "--format", "Audio_Only", "-o", tmpDir+vod.id+"_orig.mp3"]);
@@ -134,13 +132,14 @@ function addItem(i){
 			});
 			download.on('close', function (code) {
 				console.log('ytdl finished. Code: '+code);
-
+				//TODO: start download of next vod. it should be possible to do download of new vod while it's processing the previous vod, right? i suck at async js stuff, so it's all sync, idc
+				//TODO: ffmpeg should be able to ramp down the volume of the jingle on its own. this should be implemented somehow so that all the user needs to do is provide a normal music file. ideally use config to provide duration of jingle as well...
 				var merge = spawn('ffmpeg', ['-i', tmpDir+vod.id+'_orig.mp3', '-i', 'jingle.mp3', '-qscale:a', '8', '-filter_complex', '[0]loudnorm=I=-16:LRA=11:TP=-1.5[a0];[a0]adelay=2s|2s[b0];[b0][1]amix=inputs=2:duration=longest', tmpDir+vod.id+'.mp3']);
 				merge.stdout.on('data', function (data) {
 					console.log('merge: ' + data);
 				});
 				merge.stderr.on('data', function (data) {
-					//ffmpeg seems to do this by default for regular debug output for some reason lol
+					//ffmpeg seems to do this by default for regular debug output for some reason. also console.log is kind of annoying, piping this to stdout seems prettier anyway, i did not consider aesthetics when writing this
 					console.log('MERGE ERROR: ' + data);
 				});
 				merge.on('close', function(code){
@@ -151,7 +150,7 @@ function addItem(i){
 					
 					addToFeed(vod);
 
-					// You can add a saveXml() here to generate the feed every time a new episode has been added, regardless if the program is not done yet.
+					// You can add a saveXml() here to generate the feed every time a new episode has been added, even if the program is not done yet.
 					// This is especially useful while building the initial episodes collection where it might still have to download and process thousands of vods.
 					// If you leave it off, the feed will only be generated once all VODs have been processed.
 
