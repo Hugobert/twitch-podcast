@@ -16,5 +16,6 @@
 		"language": "en",
 		"author": "Example Author",
 		"categories": ["fun","chatting"]
-	}
+	},
+	"generateFeedAfterEachEpisode": false
 }

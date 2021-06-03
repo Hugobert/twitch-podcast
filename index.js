@@ -150,11 +150,9 @@ function addItem(i){
 					
 					addToFeed(vod);
 
-					// You can add a saveXml() here to generate the feed every time a new episode has been added, even if the program is not done yet.
-					// This is especially useful while building the initial episodes collection where it might still have to download and process thousands of vods.
-					// If you leave it off, the feed will only be generated once all VODs have been processed.
-
-					//saveXml();
+					if(config.generateFeedAfterEachEpisode){
+						saveXml();
+					}
 					
 					if(i<vods.length){
 						i=i+1;
