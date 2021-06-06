@@ -78,12 +78,25 @@ const feed = new Podcast({
 
 // ===== PROGRAM START ===== //
 
-// TODO: get channel id by providing username. 
+// get channel id from username
+if (config.channelIsNickname){
+	var channelid = JSON.parse(request('GET', 'https://api.twitch.tv/helix/users?login='+config.channel, {
+		headers: {
+			'Accept': 'application/vnd.twitchtv.v5+json',
+			'Client-ID': config.twitch.clientID,
+			'Authorization': 'Bearer '+config.twitch.token
+		},
+	}).body).data[0].id;
+	console.log("Channel ID for "+config.channel+": "+channelid);
+} else {
+	channelid = config.channel;
+}
+
 
 console.log("Getting VODs...");
 var endOfList = false;
 var vods = [];
-var vodsReq = request('GET', 'https://api.twitch.tv/helix/videos?user_id='+config.channel+'&type=highlight&first=100', {
+var vodsReq = request('GET', 'https://api.twitch.tv/helix/videos?user_id='+channelid+'&type=highlight&first=100', {
 	headers: {
 		'Accept': 'application/vnd.twitchtv.v5+json',
 		'Client-ID': config.twitch.clientID,
@@ -98,7 +111,7 @@ var newest = vods[0];
 console.log("Latest VOD is: "+newest.title);
 
 do {
-	var moreVodsReq = request('GET', 'https://api.twitch.tv/helix/videos?user_id='+config.channel+'&type=highlight&first=100&after='+pageCursor, {
+	var moreVodsReq = request('GET', 'https://api.twitch.tv/helix/videos?user_id='+channelid+'&type=highlight&first=100&after='+pageCursor, {
 		headers: {
 			'Accept': 'application/vnd.twitchtv.v5+json',
 			'Client-ID': config.twitch.clientID,

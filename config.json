@@ -3,7 +3,8 @@
 		"clientID": "",
 		"token": ""
 	},
-	"channel": "00000000",
+	"channel": "",
+	"channelIsNickname": true,
 	"episodesFolder": "./episodes/",
 	"rssLocation": "./rss.xml",
 	"episodesUrl": "https://example.com/episodes/",
