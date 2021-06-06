@@ -8,11 +8,11 @@ This helps make chat streams accessible to anyone who does not have permanent ac
 - [node.js](https://nodejs.org/)
 
 ## Preparation
-You **need** to create a `jingle.mp3` that will play in the beginning of each episode. (yes, this should be an optional feature, but at the moment you need to do this, if you don't want a jingle then just make a second of silence or whatever). It can be as long as you want, I found that more than a minute is too long, 30 seconds is kind of alright, but that's all up to your preference. Also make sure to edit it in a way so that the volume ramps down a few seconds in (this is also something that in theory could be done automatically with ffmpeg, the todo list is quite long indeed). Just place the file in the same folder where the `index.js` is located.
-
 Open and edit `config.json`. There you need to enter your Twitch API ID and access token as well as all the metadata and locations where the rss feed and the episodes should be stored.
 
 For the channel name, use the normal display name (not the numeric ID) and keep `channelIsNickname: true`. If the channel changes their nickname, you need to change the nickname in the config as well. You can however set `channelIsNickname: false` and use the unique numeric ID for the channel instead (the program will tell you this ID in the very beginning).
+
+If you set `useJingle` to true, the program will use the file specified in `jingleFile` as an intro jingle. `jingleFile` will be ignored if `useJingle` is false. If you choose to use a jingle, for the time being I recommend crafting it manually in a way so the volume ramps down after a few seconds. The delay until when the original audio starts is currently fixed to 2 seconds, though I might add an option to customize this.
 
 Install nodejs module dependencies by running `npm install`.
 
