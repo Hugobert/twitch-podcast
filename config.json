@@ -5,6 +5,8 @@
 	},
 	"channel": "",
 	"channelIsNickname": true,
+	"useJingle": false,
+	"jingleFile": "./jingle.mp3",
 	"episodesFolder": "./episodes/",
 	"rssLocation": "./rss.xml",
 	"episodesUrl": "https://example.com/episodes/",

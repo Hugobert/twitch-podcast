@@ -147,7 +147,12 @@ function addItem(i){
 				console.log('ytdl finished. Code: '+code);
 				//TODO: start download of next vod. it should be possible to do download of new vod while it's processing the previous vod, right? i suck at async js stuff, so it's all sync, idc
 				//TODO: ffmpeg should be able to ramp down the volume of the jingle on its own. this should be implemented somehow so that all the user needs to do is provide a normal music file. ideally use config to provide duration of jingle as well...
-				var merge = spawn('ffmpeg', ['-i', tmpDir+vod.id+'_orig.mp3', '-i', 'jingle.mp3', '-qscale:a', '8', '-filter_complex', '[0]loudnorm=I=-16:LRA=11:TP=-1.5[a0];[a0]adelay=2s|2s[b0];[b0][1]amix=inputs=2:duration=longest', tmpDir+vod.id+'.mp3']);
+				if(config.useJingle){
+					var ffmpegParams = ['-i', tmpDir+vod.id+'_orig.mp3', '-i', config.jingleFile, '-qscale:a', '8', '-filter_complex', '[0]loudnorm=I=-16:LRA=11:TP=-1.5[a0];[a0]adelay=2s|2s[b0];[b0][1]amix=inputs=2:duration=longest', tmpDir+vod.id+'.mp3'];
+				} else {
+					var ffmpegParams = ['-i', tmpDir+vod.id+'_orig.mp3', '-qscale:a', '8', '-filter_complex', 'loudnorm=I=-16:LRA=11:TP=-1.5', tmpDir+vod.id+'.mp3'];
+				}
+				var merge = spawn('ffmpeg', ffmpegParams);
 				merge.stdout.on('data', function (data) {
 					console.log('merge: ' + data);
 				});
