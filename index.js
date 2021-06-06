@@ -78,6 +78,15 @@ const feed = new Podcast({
 
 // ===== PROGRAM START ===== //
 
+if(config.useJingle && !fs.existsSync(config.jingleFile)){
+	console.log("Jingle not found, check config.json\nExpected: "+config.jingleFile);
+	process.exit();
+} else if (config.useJingle && fs.existsSync(config.jingleFile)){
+	console.log("Using jingle: "+config.jingleFile);
+} else if (!config.useJingle){
+	console.log("Not using jingle.");
+}
+
 // get channel id from username
 if (config.channelIsNickname){
 	var channelid = JSON.parse(request('GET', 'https://api.twitch.tv/helix/users?login='+config.channel, {
@@ -148,7 +157,12 @@ function addItem(i){
 				//TODO: start download of next vod. it should be possible to do download of new vod while it's processing the previous vod, right? i suck at async js stuff, so it's all sync, idc
 				//TODO: ffmpeg should be able to ramp down the volume of the jingle on its own. this should be implemented somehow so that all the user needs to do is provide a normal music file. ideally use config to provide duration of jingle as well...
 				if(config.useJingle){
-					var ffmpegParams = ['-i', tmpDir+vod.id+'_orig.mp3', '-i', config.jingleFile, '-qscale:a', '8', '-filter_complex', '[0]loudnorm=I=-16:LRA=11:TP=-1.5[a0];[a0]adelay=2s|2s[b0];[b0][1]amix=inputs=2:duration=longest', tmpDir+vod.id+'.mp3'];
+					if(fs.existsSync(config.jingleFile)){
+						var ffmpegParams = ['-i', tmpDir+vod.id+'_orig.mp3', '-i', config.jingleFile, '-qscale:a', '8', '-filter_complex', '[0]loudnorm=I=-16:LRA=11:TP=-1.5[a0];[a0]adelay=2s|2s[b0];[b0][1]amix=inputs=2:duration=longest', tmpDir+vod.id+'.mp3'];
+					} else {
+						console.log("Jingle not found, check config.json\nExpected: "+config.jingleFile);
+						process.exit();
+					}
 				} else {
 					var ffmpegParams = ['-i', tmpDir+vod.id+'_orig.mp3', '-qscale:a', '8', '-filter_complex', 'loudnorm=I=-16:LRA=11:TP=-1.5', tmpDir+vod.id+'.mp3'];
 				}
